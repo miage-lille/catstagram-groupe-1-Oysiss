@@ -3,6 +3,7 @@ import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { counterSelector } from '../reducer';
 import { decrement, increment } from '../actions';
+import data from '../fake-datas.json';
 
 const Container = styled.div`
   padding: 16px;
@@ -42,7 +43,7 @@ const Counter = () => {
     <Container>
       <Button onClick={() => dispatch(decrement())} disabled={counter <= 3}> - </Button>
       <DisplayCounter>{counter}</DisplayCounter>
-      <Button onClick={() => dispatch(increment())}> + </Button>
+      <Button onClick={() => dispatch(increment())} disabled={counter >= data.length}> + </Button>
     </Container>
   );
 };

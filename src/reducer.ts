@@ -7,20 +7,22 @@ import data from './fake-datas.json';
 export type State = {
   counter: number
   pictures: Picture[]
-}; // TODO : Update this type !
+};
 
 const INIT_PICTURE_NUMBER = 3;
 
 export const defaultState = {
   counter: INIT_PICTURE_NUMBER,
   pictures: [data[0], data[1], data[2]]
-}; // TODO : Update this value !
+};
 
 export const reducer = (state: State | undefined, action: Actions): State | Loop<State> => {
   if (!state) return defaultState; // mandatory by redux
   switch (action.type) {
     case 'INCREMENT':
+      if (state.counter >= data.length) return state;
       const addCounter = state.counter + 1;
+      console.log(state.pictures);
       return { ...state, counter: addCounter, pictures: [...state.pictures,data[addCounter-1]] };
     case 'DECREMENT':
       if (state.counter <= 3) return state;
