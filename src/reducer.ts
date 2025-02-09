@@ -3,17 +3,20 @@ import { compose } from 'redux';
 import { Actions } from './types/actions.type';
 import { Picture } from './types/picture.type';
 import data from './fake-datas.json';
+import { none, Option, some } from 'fp-ts/lib/Option';
 
 export type State = {
   counter: number
   pictures: Picture[]
+  pictureSelected: Option<Picture>;
 };
 
 const INIT_PICTURE_NUMBER = 3;
 
 export const defaultState = {
   counter: INIT_PICTURE_NUMBER,
-  pictures: [data[0], data[1], data[2]]
+  pictures: [data[0], data[1], data[2]],
+  pictureSelected: none,
 };
 
 export const reducer = (state: State | undefined, action: Actions): State | Loop<State> => {
@@ -29,9 +32,10 @@ export const reducer = (state: State | undefined, action: Actions): State | Loop
       const decCounter = state.counter - 1;
       return { ...state, counter: decCounter, pictures: data.slice(0, decCounter) as Picture[] };
     case 'SELECT_PICTURE':
-      throw 'Not Implemented';
+      console.log('SELECT_PICTURE payload:', action.picture);
+      return { ...state, pictureSelected: some(action.picture) };
     case 'CLOSE_MODAL':
-      throw 'Not Implemented';
+      return { ...state, pictureSelected: none };
     case 'FETCH_CATS_REQUEST':
       throw 'Not Implemented';
     case 'FETCH_CATS_COMMIT':
@@ -48,7 +52,7 @@ export const picturesSelector = (state: State) => {
   return state.pictures;
 };
 export const getSelectedPicture = (state: State) => {
-  throw 'Not Implemented';
+  return state.pictureSelected;
 };
 
 export default compose(liftState, reducer);
