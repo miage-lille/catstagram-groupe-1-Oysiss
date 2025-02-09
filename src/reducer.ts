@@ -51,7 +51,7 @@ export const counterSelector = (state: State) => {
 export const picturesSelector = (state: State) => {
   return state.pictures;
 };
-export const getSelectedPicture = (state: State) => {
+export const selectedPictureSelector = (state: State) => {
   return state.pictureSelected;
 };
 

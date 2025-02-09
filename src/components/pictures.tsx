@@ -1,6 +1,6 @@
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { picturesSelector, getSelectedPicture } from '../reducer';
+import { picturesSelector, selectedPictureSelector } from '../reducer';
 import { Picture } from '../types/picture.type';
 import ModalPortal from './modal';
 import { isSome } from 'fp-ts/Option';
@@ -26,7 +26,7 @@ const Image = styled.img`
 const Pictures = () => {
   const dispatch = useDispatch();
   const pictures = useSelector(picturesSelector);
-  const pictureSelected = useSelector(getSelectedPicture);
+  const pictureSelected = useSelector(selectedPictureSelector);
 
   const handlePictureClick = (picture: Picture) => {
     console.log('handlePictureClick:', picture);

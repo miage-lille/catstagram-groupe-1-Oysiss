@@ -1,6 +1,6 @@
 import * as fc from 'fast-check';
 import { getCmd, getModel, ActionCmd, RunCmd } from 'redux-loop';
-import reducer, { counterSelector, getSelectedPicture, picturesSelector } from '../src/reducer';
+import reducer, { counterSelector, selectedPictureSelector, picturesSelector } from '../src/reducer';
 import { fetchCatsCommit, fetchCatsRollback } from '../src/actions';
 import 'fp-ts-jest-matchers';
 import {
@@ -63,7 +63,7 @@ test('given state and CLOSE_MODAL action then next pictureSelected value must be
   fc.assert(
     fc.property(getState(), state => {
       const nextState = reducer(state, { type: 'CLOSE_MODAL' });
-      expect(getSelectedPicture(getModel(nextState))).toBeNone();
+      expect(selectedPictureSelector(getModel(nextState))).toBeNone();
     }),
   );
 });
@@ -72,7 +72,7 @@ test('given state and SELECT_PICTURE action then next pictureSelected value must
   fc.assert(
     fc.property(getState(), getPictureArb(), (state, picture) => {
       const nextState = reducer(state, { type: 'SELECT_PICTURE', picture });
-      expect(getSelectedPicture(getModel(nextState))).toBeSome(picture);
+      expect(selectedPictureSelector(getModel(nextState))).toBeSome(picture);
     }),
   );
 });
