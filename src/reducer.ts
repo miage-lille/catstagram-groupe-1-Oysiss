@@ -1,9 +1,10 @@
-import { Loop, liftState } from 'redux-loop';
+import { Loop, liftState, loop } from 'redux-loop';
 import { compose } from 'redux';
 import { Actions } from './types/actions.type';
 import { Picture } from './types/picture.type';
 import data from './fake-datas.json';
 import { none, Option, some } from 'fp-ts/lib/Option';
+import { cmdFetch } from './commands';
 
 export type State = {
   counter: number
@@ -37,7 +38,7 @@ export const reducer = (state: State | undefined, action: Actions): State | Loop
     case 'CLOSE_MODAL':
       return { ...state, pictureSelected: none };
     case 'FETCH_CATS_REQUEST':
-      throw 'Not Implemented';
+      return loop(state, cmdFetch(action))
     case 'FETCH_CATS_COMMIT':
       throw 'Not Implemented';
     case 'FETCH_CATS_ROLLBACK':
