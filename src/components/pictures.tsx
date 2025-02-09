@@ -39,19 +39,19 @@ const Pictures = () => {
 
   return (
     <Container>
-      {pictures.map((picture: Picture, index: number) => (
-        <Image 
-          key={index} 
-          src={picture.previewFormat} 
-          alt={`cat-${index}`} 
-          onClick={() => handlePictureClick(picture)} 
-        />
+      {pictures.status === 'success' && pictures.data.map((picture: Picture, index: number) => (
+      <Image 
+        key={index} 
+        src={picture.previewFormat} 
+        alt={`cat-${index}`} 
+        onClick={() => handlePictureClick(picture)} 
+      />
       ))}
       {isSome(pictureSelected) && pictureSelected.value && (
-        <ModalPortal 
-          largeFormat={pictureSelected.value.largeFormat} 
-          close={handleCloseModal} 
-        />
+      <ModalPortal 
+        largeFormat={pictureSelected.value.largeFormat} 
+        close={handleCloseModal} 
+      />
       )}
     </Container>
   );
