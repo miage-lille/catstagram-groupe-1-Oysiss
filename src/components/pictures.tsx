@@ -1,5 +1,8 @@
 import React from 'react';
 import styled from 'styled-components';
+import { picturesSelector } from '../reducer';
+import { useDispatch, useSelector } from 'react-redux';
+import { Picture } from '../types/picture.type';
 
 const Container = styled.div`
   padding: 1rem;
@@ -18,7 +21,18 @@ const Image = styled.img`
   }
 `;
 const Pictures = () => {
-  return null;
+  const dispatch = useDispatch();
+  const counter = useSelector(picturesSelector);
+  
+  return (
+    <Container>
+      {counter.map((picture: Picture, index: number) => (
+      <Image key={index} src={picture.previewFormat} alt={`cat-${index}`} />
+      ))}
+    </Container>
+  );
+
+
 };
 
 export default Pictures;
