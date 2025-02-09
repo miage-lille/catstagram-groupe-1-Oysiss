@@ -2,21 +2,22 @@ import { Loop, liftState, loop } from 'redux-loop';
 import { compose } from 'redux';
 import { Actions } from './types/actions.type';
 import { Picture } from './types/picture.type';
-import data from './fake-datas.json';
 import { none, Option, some } from 'fp-ts/lib/Option';
 import { cmdFetch } from './commands';
+import { fetchCatsRequest } from './actions';
+import { ApiResponse } from './types/api.type';
+
+const MINIMUM_NUMBER_OF_PICTURES = 3;
 
 export type State = {
-  counter: number
-  pictures: Picture[]
+  counter: number;
+  pictures: ApiResponse;
   pictureSelected: Option<Picture>;
 };
 
-const INIT_PICTURE_NUMBER = 3;
-
-export const defaultState = {
-  counter: INIT_PICTURE_NUMBER,
-  pictures: [data[0], data[1], data[2]],
+export const defaultState: State = {
+  counter: MINIMUM_NUMBER_OF_PICTURES,
+  pictures: { status: 'success', data: [] },
   pictureSelected: none,
 };
 
@@ -24,14 +25,19 @@ export const reducer = (state: State | undefined, action: Actions): State | Loop
   if (!state) return defaultState; // mandatory by redux
   switch (action.type) {
     case 'INCREMENT':
-      if (state.counter >= data.length) return state;
+      if (state.counter >= 50) return state;
       const addCounter = state.counter + 1;
-      console.log(state.pictures);
-      return { ...state, counter: addCounter, pictures: [...state.pictures,data[addCounter-1]] };
+      return loop(
+        { ...state, counter: addCounter },
+        cmdFetch(fetchCatsRequest(addCounter))
+      );
     case 'DECREMENT':
-      if (state.counter <= 3) return state;
+      if (state.counter <= MINIMUM_NUMBER_OF_PICTURES) return state;
       const decCounter = state.counter - 1;
-      return { ...state, counter: decCounter, pictures: data.slice(0, decCounter) as Picture[] };
+      return loop(
+        { ...state, counter: decCounter },
+        cmdFetch(fetchCatsRequest(decCounter))
+      );
     case 'SELECT_PICTURE':
       console.log('SELECT_PICTURE payload:', action.picture);
       return { ...state, pictureSelected: some(action.picture) };
@@ -40,9 +46,10 @@ export const reducer = (state: State | undefined, action: Actions): State | Loop
     case 'FETCH_CATS_REQUEST':
       return loop(state, cmdFetch(action))
     case 'FETCH_CATS_COMMIT':
-      throw 'Not Implemented';
+      return { ...state, pictures: { status: 'success', data: action.payload as Picture[] } };
     case 'FETCH_CATS_ROLLBACK':
-      throw 'Not Implemented';
+      console.error(action.error);
+      return { ...state, pictures: { status: 'failure', error: action.error } };
   }
 };
 
